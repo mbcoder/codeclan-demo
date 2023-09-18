@@ -17,17 +17,38 @@
 package com.mycompany.app;
 
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
+import com.esri.arcgisruntime.concurrent.ListenableFuture;
+import com.esri.arcgisruntime.data.Feature;
+import com.esri.arcgisruntime.data.FeatureTableEditResult;
+import com.esri.arcgisruntime.data.ServiceFeatureTable;
+import com.esri.arcgisruntime.data.ServiceGeodatabase;
+import com.esri.arcgisruntime.geometry.GeometryEngine;
+import com.esri.arcgisruntime.geometry.Point;
+import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.mapping.BasemapStyle;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.view.MapView;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class App extends Application {
 
     private MapView mapView;
+
+    private ServiceFeatureTable featureTable;
+
+    private static final String SERVICE_LAYER_URL =
+        "https://sampleserver6.arcgisonline.com/arcgis/rest/services/DamageAssessment/FeatureServer";
 
     public static void main(String[] args) {
 
@@ -52,8 +73,10 @@ public class App extends Application {
         // An API key is required to enable access to services, web maps, and web scenes hosted in ArcGIS Online.
         // If you haven't already, go to your developer dashboard to get your API key.
         // Please refer to https://developers.arcgis.com/java/get-started/ for more information
-        String yourApiKey = "YOUR_API_KEY";
-        ArcGISRuntimeEnvironment.setApiKey(yourApiKey);
+        String yourAPIKey = System.getProperty("apiKey");
+        ArcGISRuntimeEnvironment.setApiKey(yourAPIKey);
+        System.out.println("API key -" + yourAPIKey);
+        ArcGISRuntimeEnvironment.setApiKey(yourAPIKey);
 
         // create a MapView to display the map and add it to the stack pane
         mapView = new MapView();
@@ -64,6 +87,110 @@ public class App extends Application {
 
         // display the map by setting the map on the map view
         mapView.setMap(map);
+
+        // create a service geodatabase from the service layer url and load it
+        var serviceGeodatabase = new ServiceGeodatabase(SERVICE_LAYER_URL);
+        serviceGeodatabase.addDoneLoadingListener(() -> {
+
+            // create service feature table from the service geodatabase's table first layer
+            featureTable = serviceGeodatabase.getTable(0);
+
+            // create a feature layer from table
+            var featureLayer = new FeatureLayer(featureTable);
+
+            // add the layer to the ArcGISMap
+            map.getOperationalLayers().add(featureLayer);
+        });
+        serviceGeodatabase.loadAsync();
+
+        mapView.setOnMouseClicked(event -> {
+            // check that the primary mouse button was clicked
+            if (event.isStillSincePress() && event.getButton() == MouseButton.PRIMARY) {
+                // create a point from where the user clicked
+                Point2D point = new Point2D(event.getX(), event.getY());
+
+                // create a map point from a point
+                Point mapPoint = mapView.screenToLocation(point);
+
+                // for a wrapped around map, the point coordinates include the wrapped around value
+                // for a service in projected coordinate system, this wrapped around value has to be normalized
+                Point normalizedMapPoint = (Point) GeometryEngine.normalizeCentralMeridian(mapPoint);
+
+                // add a new feature to the service feature table
+                addFeature(normalizedMapPoint, featureTable);
+            }
+        });
+
+    }
+
+    /**
+     * Adds a new Feature to a ServiceFeatureTable and applies the changes to the
+     * server.
+     *
+     * @param mapPoint location to add feature
+     * @param featureTable service feature table to add feature
+     */
+    private void addFeature(Point mapPoint, ServiceFeatureTable featureTable) {
+
+        // create default attributes for the feature
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("typdamage", "Destroyed");
+        attributes.put("primcause", "Earthquake");
+
+        // creates a new feature using default attributes and point
+        Feature feature = featureTable.createFeature(attributes, mapPoint);
+
+        // check if feature can be added to feature table
+        if (featureTable.canAdd()) {
+            // add the new feature to the feature table and to server
+            featureTable.addFeatureAsync(feature).addDoneListener(() -> applyEdits(featureTable));
+        } else {
+            displayMessage(null, "Cannot add a feature to this feature table");
+        }
+    }
+
+    /**
+     * Sends any edits on the ServiceFeatureTable to the server.
+     *
+     * @param featureTable service feature table
+     */
+    private void applyEdits(ServiceFeatureTable featureTable) {
+
+        // apply the changes to the server
+        ListenableFuture<List<FeatureTableEditResult>> editResult = featureTable.getServiceGeodatabase().applyEditsAsync();
+        editResult.addDoneListener(() -> {
+            try {
+                List<FeatureTableEditResult> edits = editResult.get();
+                // check if the server edit was successful
+                if (edits != null && edits.size() > 0) {
+                    var featureEditResult = edits.get(0).getEditResult().get(0);
+                    if (!featureEditResult.hasCompletedWithErrors()) {
+                        displayMessage(null, "Feature successfully added");
+                    } else {
+                        throw featureEditResult.getError();
+                    }
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                displayMessage("Exception applying edits on server", e.getCause().getMessage());
+            }
+        });
+    }
+
+    /**
+     * Shows a message in an alert dialog.
+     *
+     * @param title title of alert
+     * @param message message to display
+     */
+    private void displayMessage(String title, String message) {
+
+        Platform.runLater(() -> {
+            Alert dialog = new Alert(Alert.AlertType.INFORMATION);
+            dialog.initOwner(mapView.getScene().getWindow());
+            dialog.setHeaderText(title);
+            dialog.setContentText(message);
+            dialog.showAndWait();
+        });
     }
 
     /**
