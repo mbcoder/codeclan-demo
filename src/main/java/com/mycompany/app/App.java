@@ -90,6 +90,10 @@ public class App extends Application {
 
         // create a service geodatabase from the service layer url and load it
         var serviceGeodatabase = new ServiceGeodatabase(SERVICE_LAYER_URL);
+
+        // the done loading listener will run the enclosed code on a separate thread which is off the UI thread
+        // this is important as we are waiting the a web service which might take a while to respond.  Delays in the
+        // service responding can cause the UI to hang which will result in user frustration
         serviceGeodatabase.addDoneLoadingListener(() -> {
 
             // create service feature table from the service geodatabase's table first layer
@@ -184,6 +188,9 @@ public class App extends Application {
      */
     private void displayMessage(String title, String message) {
 
+        // The runLater method will put the enclosed code back onto the UI thread.
+        // If you are writing UI code, then this needs to be on the UI thread otherwise
+        // your application could crash!
         Platform.runLater(() -> {
             Alert dialog = new Alert(Alert.AlertType.INFORMATION);
             dialog.initOwner(mapView.getScene().getWindow());
