@@ -48,7 +48,8 @@ public class App extends Application {
     private ServiceFeatureTable featureTable;
 
     private static final String SERVICE_LAYER_URL =
-        "https://sampleserver6.arcgisonline.com/arcgis/rest/services/DamageAssessment/FeatureServer";
+        "https://services1.arcgis.com/6677msI40mnLuuLr/arcgis/rest/services/PointsofRelaxing/FeatureServer/0";
+        //"https://sampleserver6.arcgisonline.com/arcgis/rest/services/DamageAssessment/FeatureServer";
 
     public static void main(String[] args) {
 
@@ -138,8 +139,11 @@ public class App extends Application {
 
         // create default attributes for the feature
         Map<String, Object> attributes = new HashMap<>();
-        attributes.put("typdamage", "Destroyed");
-        attributes.put("primcause", "Earthquake");
+        attributes.put("Name", "Terrible coffee shop");
+        attributes.put("Category", "Cafe");
+        attributes.put("Description", "Instant coffee of the worst kind!");
+        //attributes.put("typdamage", "Destroyed");
+        //attributes.put("primcause", "Earthquake");
 
         // creates a new feature using default attributes and point
         Feature feature = featureTable.createFeature(attributes, mapPoint);
