@@ -120,9 +120,11 @@ public class App extends Application {
             if (event.isStillSincePress() && event.getButton() == MouseButton.PRIMARY) {
                 // create a point from where the user clicked
                 Point2D point = new Point2D(event.getX(), event.getY());
+                System.out.println("screen coordinate : x=" + point.getX() + ",y=" + point.getY());
 
                 // create a map point from a point
                 Point mapPoint = mapView.screenToLocation(point);
+                System.out.println("map coordinate : x=" + mapPoint.getX() + "y=" + mapPoint.getY());
 
                 // for a wrapped around map, the point coordinates include the wrapped around value
                 // for a service in projected coordinate system, this wrapped around value has to be normalized
