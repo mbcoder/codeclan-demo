@@ -49,7 +49,14 @@ public class App extends Application {
 
     private static final String SERVICE_LAYER_URL =
         "https://services1.arcgis.com/6677msI40mnLuuLr/arcgis/rest/services/PointsofRelaxing/FeatureServer/0";
-        //"https://sampleserver6.arcgisonline.com/arcgis/rest/services/DamageAssessment/FeatureServer";
+
+    private enum placeType {
+        Cafe,
+        Nature,
+        Park,
+        Urban,
+        Water;
+    }
 
     public static void main(String[] args) {
 
@@ -122,7 +129,7 @@ public class App extends Application {
                 Point normalizedMapPoint = (Point) GeometryEngine.normalizeCentralMeridian(mapPoint);
 
                 // add a new feature to the service feature table
-                addFeature(normalizedMapPoint, featureTable);
+                addFeature("Tasty coffee", "Worth going here!", placeType.Cafe, normalizedMapPoint, featureTable);
             }
         });
 
@@ -135,15 +142,13 @@ public class App extends Application {
      * @param mapPoint location to add feature
      * @param featureTable service feature table to add feature
      */
-    private void addFeature(Point mapPoint, ServiceFeatureTable featureTable) {
+    private void addFeature(String name, String description, placeType type, Point mapPoint, ServiceFeatureTable featureTable) {
 
         // create default attributes for the feature
         Map<String, Object> attributes = new HashMap<>();
-        attributes.put("Name", "Terrible coffee shop");
-        attributes.put("Category", "Cafe");
-        attributes.put("Description", "Instant coffee of the worst kind!");
-        //attributes.put("typdamage", "Destroyed");
-        //attributes.put("primcause", "Earthquake");
+        attributes.put("Name", name);
+        attributes.put("Description", description);
+        attributes.put("Category", type.name());
 
         // creates a new feature using default attributes and point
         Feature feature = featureTable.createFeature(attributes, mapPoint);
