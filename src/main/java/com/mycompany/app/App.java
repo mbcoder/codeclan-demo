@@ -55,7 +55,7 @@ public class App extends Application {
         Nature,
         Park,
         Urban,
-        Water;
+        Water
     }
 
     public static void main(String[] args) {
