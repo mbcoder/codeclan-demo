@@ -173,53 +173,47 @@ public class App extends Application {
     dialog = new Dialog<>();
     dialog.setTitle("Details");
     dialog.setHeaderText("Enter details of your happy place here!");
-
     dialog.setGraphic(new ImageView(new Image(Objects.requireNonNull(this.getClass().getResource("/happy.png")).toString())));
 
     // set the button types
-
     var dialogPane = dialog.getDialogPane();
     ButtonType submitButtonType = new ButtonType("Submit", ButtonBar.ButtonData.OK_DONE);
     dialogPane.getButtonTypes().addAll(submitButtonType, ButtonType.CANCEL);
 
-    // Create the username and password labels and fields.
+    // create the username and password labels and fields.
     GridPane grid = new GridPane();
     grid.setHgap(10);
     grid.setVgap(10);
     grid.setPadding(new Insets(20, 150, 10, 10));
 
-    TextField placeName = new TextField();
-    placeName.setPromptText("Place name");
+    // set up the textfields
+    TextField placeNameField = new TextField();
+    placeNameField.setPromptText("Place name");
     TextField description = new TextField();
     description.setPromptText("Place description");
 
+    // add labels and textfields to the grid
     grid.add(new Label("Place name:"), 0, 0);
-    grid.add(placeName, 1, 0);
+    grid.add(placeNameField, 1, 0);
     grid.add(new Label("Description:"), 0, 1);
     grid.add(description, 1, 1);
-
-// Enable/Disable login button depending on whether a username was entered.
-    Node submitButton = dialog.getDialogPane().lookupButton(submitButtonType);
-    submitButton.setDisable(true);
-
-// Do some validation (using the Java 8 lambda syntax).
-    placeName.textProperty().addListener((observable, oldValue, newValue) -> submitButton.setDisable(newValue.trim().isEmpty()));
-
     dialogPane.setContent(grid);
 
-    // Request focus on the username field by default.
-    Platform.runLater(placeName::requestFocus);
+    // enable/Disable login button depending on whether a username was entered
+    Node submitButton = dialog.getDialogPane().lookupButton(submitButtonType);
+    submitButton.setDisable(true);
+    placeNameField.textProperty().addListener((observable, oldValue, newValue) -> submitButton.setDisable(newValue.trim().isEmpty()));
 
-// Convert the result to a username-password-pair when the login button is clicked.
+    // request focus on the place name field by default.
+    Platform.runLater(placeNameField::requestFocus);
+
+    // convert the result to a name-description-pair when the submit button is clicked.
     dialog.setResultConverter(dialogButton -> {
       if (dialogButton == submitButtonType) {
-        return new Pair<>(placeName.getText(), description.getText());
+        return new Pair<>(placeNameField.getText(), description.getText());
       }
       return null;
     });
-
-
-
   }
 
 
