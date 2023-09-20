@@ -1,0 +1,54 @@
+
+ .myComboBox
+ {
+-fx-background-color:white;
+ -fx-pref-width: 150;
+ -fx-pref-height: 40;
+ -fx-text-fill:black;
+ -fx-font-size: 15;
+ -fx-font-family: "Courier New";
+ }
+
+/*Edit Normal Cell color */
+ .myComboBox .list-cell{
+-fx-background-color:white;
+}
+
+/*Edit Cell Color Only when cursor hover cell */
+.myComboBox .list-cell:hover{
+-fx-background-color:honeydew;
+   -fx-text-fill:black;
+}
+
+/*Edit Cell Color Only when selected */
+.myComboBox .list-cell:selected{
+-fx-background-color:powderblue;
+   -fx-text-fill:black;
+}
+
+
+.myDialog{
+    -fx-background-color: ivory;
+    -fx-font-family: "Courier New";
+    -fx-pref-width: 500;
+
+}
+.myDialog > *.button-bar > *.container{
+    -fx-background-color: ivory;
+}
+
+.myDialog:header *.header-panel{
+    -fx-background-color: powderblue;
+}
+.myDialog:header *.header-panel *.label{
+    -fx-font-size: 22;
+}
+
+.myLabel {
+ -fx-text-fill:black;
+ -fx-font-size: 15;
+ -fx-font-family: "Courier New";
+ -fx-padding: 10;
+ -fx-background-color: rgb(255, 255, 240, 0.8);
+
+}
