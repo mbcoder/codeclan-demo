@@ -43,3 +43,12 @@
 .myDialog:header *.header-panel *.label{
     -fx-font-size: 22;
 }
+
+.myLabel {
+ -fx-text-fill:black;
+ -fx-font-size: 15;
+ -fx-font-family: "Courier New";
+ -fx-padding: 10;
+ -fx-background-color: rgb(255, 255, 240, 0.8);
+
+}

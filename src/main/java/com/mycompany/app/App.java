@@ -27,6 +27,7 @@ import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.mapping.BasemapStyle;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
+import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.MapView;
 
 import java.util.ArrayList;
@@ -106,11 +107,18 @@ public class App extends Application {
     mapView = new MapView();
     stackPane.getChildren().add(mapView);
 
+    var label = new Label("Click to add a feature!");
+    label.getStyleClass().add("myLabel");
+    stackPane.getChildren().add(label);
+    StackPane.setAlignment(label, Pos.TOP_LEFT);
+
     // create an ArcGISMap with an imagery basemap
     ArcGISMap map = new ArcGISMap(BasemapStyle.ARCGIS_IMAGERY);
 
     // display the map by setting the map on the map view
     mapView.setMap(map);
+    // set a viewpoint on the map view
+//    mapView.setViewpoint(new Viewpoint(15.169193, 16.333479, 1479143818));
 
     // set up an array list to capture categories of places
     var placeTypesArray = new ArrayList<>(Arrays.asList("Cafe", "Park", "Nature", "Water", "Urban", "Other"));
@@ -156,17 +164,22 @@ public class App extends Application {
         // for a service in projected coordinate system, this wrapped around value has to be normalized
         Point normalizedMapPoint = (Point) GeometryEngine.normalizeCentralMeridian(mapPoint);
 
+        // show the dialog and wait for user input
+        // use the input to create a new feature
         dialog.showAndWait().ifPresent(pair -> {
           addFeature(pair.getKey(), pair.getValue(), placesComboBox.getSelectionModel().getSelectedItem(), normalizedMapPoint, featureTable);
 
         });
-
       }
     });
 
   }
 
-  public void setUpTextInputDialog() {
+  /**
+   * Creates a new dialog set up to collect user input. The dialog contains a gridpane with labels and text fields,
+   * a combobox, and buttons.
+   */
+  private void setUpTextInputDialog() {
 
     dialog = new Dialog<>();
     dialog.setTitle("Details");
@@ -188,7 +201,7 @@ public class App extends Application {
 
     // set up the text fields
     TextField placeNameField = new TextField();
-    placeNameField.setPrefWidth(300);
+    placeNameField.setPrefWidth(400);
     placeNameField.setPromptText("Place name");
     TextField description = new TextField();
     description.setPromptText("Place description");
