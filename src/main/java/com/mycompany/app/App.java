@@ -99,23 +99,23 @@ public class App extends Application {
     System.out.println("API key -" + yourAPIKey);
     ArcGISRuntimeEnvironment.setApiKey(yourAPIKey);
 
-    // create a MapView to display the map and add it to the stack pane
-    mapView = new MapView();
-    stackPane.getChildren().add(mapView);
+    // create a MapView to display the map and add it to the stack pane --- STEP ---
+    //mapView = new MapView();
+    //stackPane.getChildren().add(mapView);
 
     var label = new Label("Click to add a feature!");
     label.getStyleClass().add("myLabel");
     stackPane.getChildren().add(label);
     StackPane.setAlignment(label, Pos.TOP_LEFT);
 
-    // create an ArcGISMap with an imagery basemap
-    ArcGISMap map = new ArcGISMap(BasemapStyle.ARCGIS_IMAGERY);
+    // create an ArcGISMap with an imagery basemap --- STEP ---
+    //ArcGISMap map = new ArcGISMap(BasemapStyle.ARCGIS_IMAGERY);
 
-    // display the map by setting the map on the map view
-    mapView.setMap(map);
+    // display the map by setting the map on the map view --- STEP ---
+    //mapView.setMap(map);
 
-    // set a viewpoint on the map view
-    mapView.setViewpoint(new Viewpoint(57, -4, 4000000));
+    // set a viewpoint on the map view --- STEP ---
+    //mapView.setViewpoint(new Viewpoint(57, -4, 4000000));
 
     // set up an array list to capture categories of places
     var placeTypesArray = new ArrayList<>(Arrays.asList("Cafe", "Park", "Nature", "Water", "Urban", "Other"));
@@ -127,11 +127,12 @@ public class App extends Application {
 
     setUpTextInputDialog();
 
-    // create a service geodatabase from the service layer url and load it
+    // create a service geodatabase from the service layer url and load it --- STEP ---
+    /*
     var serviceGeodatabase = new ServiceGeodatabase(SERVICE_LAYER_URL);
 
     // the done loading listener will run the enclosed code on a separate thread which is off the UI thread
-    // this is important as we are waiting the a web service which might take a while to respond.  Delays in the
+    // this is important as we are waiting the web service which might take a while to respond.  Delays in the
     // service responding can cause the UI to hang which will result in user frustration
     serviceGeodatabase.addDoneLoadingListener(() -> {
 
@@ -146,6 +147,10 @@ public class App extends Application {
     });
     serviceGeodatabase.loadAsync();
 
+     */
+
+    // listen for click events on the map control
+    /*
     mapView.setOnMouseClicked(event -> {
       // check that the primary mouse button was clicked
       if (event.isStillSincePress() && event.getButton() == MouseButton.PRIMARY) {
@@ -169,6 +174,8 @@ public class App extends Application {
         });
       }
     });
+
+     */
 
   }
 
