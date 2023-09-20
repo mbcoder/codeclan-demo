@@ -64,13 +64,9 @@ import javafx.util.Pair;
 public class App extends Application {
 
   private MapView mapView;
-
   private ServiceFeatureTable featureTable;
-
   private ComboBox<String> placesComboBox;
-
   private Dialog<Pair<String, String>> dialog;
-
   private static final String SERVICE_LAYER_URL =
     "https://services1.arcgis.com/6677msI40mnLuuLr/arcgis/rest/services/PointsofRelaxing/FeatureServer/0";
 
@@ -233,7 +229,6 @@ public class App extends Application {
       return null;
     });
   }
-
 
   /**
    * Adds a new Feature to a ServiceFeatureTable and applies the changes to the
