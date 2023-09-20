@@ -117,8 +117,9 @@ public class App extends Application {
 
     // display the map by setting the map on the map view
     mapView.setMap(map);
+
     // set a viewpoint on the map view
-//    mapView.setViewpoint(new Viewpoint(15.169193, 16.333479, 1479143818));
+    mapView.setViewpoint(new Viewpoint(57, -4, 4000000));
 
     // set up an array list to capture categories of places
     var placeTypesArray = new ArrayList<>(Arrays.asList("Cafe", "Park", "Nature", "Water", "Urban", "Other"));
