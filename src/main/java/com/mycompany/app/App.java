@@ -100,8 +100,8 @@ public class App extends Application {
     ArcGISRuntimeEnvironment.setApiKey(yourAPIKey);
 
     // create a MapView to display the map and add it to the stack pane --- STEP ---
-    //mapView = new MapView();
-    //stackPane.getChildren().add(mapView);
+    mapView = new MapView();
+    stackPane.getChildren().add(mapView);
 
     var label = new Label("Click to add a feature!");
     label.getStyleClass().add("myLabel");
@@ -109,13 +109,13 @@ public class App extends Application {
     StackPane.setAlignment(label, Pos.TOP_LEFT);
 
     // create an ArcGISMap with an imagery basemap --- STEP ---
-    //ArcGISMap map = new ArcGISMap(BasemapStyle.ARCGIS_IMAGERY);
+    ArcGISMap map = new ArcGISMap(BasemapStyle.ARCGIS_IMAGERY);
 
     // display the map by setting the map on the map view --- STEP ---
-    //mapView.setMap(map);
+    mapView.setMap(map);
 
     // set a viewpoint on the map view --- STEP ---
-    //mapView.setViewpoint(new Viewpoint(57, -4, 4000000));
+    mapView.setViewpoint(new Viewpoint(57, -4, 4000000));
 
     // set up an array list to capture categories of places
     var placeTypesArray = new ArrayList<>(Arrays.asList("Cafe", "Park", "Nature", "Water", "Urban", "Other"));
@@ -128,7 +128,6 @@ public class App extends Application {
     setUpTextInputDialog();
 
     // create a service geodatabase from the service layer url and load it --- STEP ---
-    /*
     var serviceGeodatabase = new ServiceGeodatabase(SERVICE_LAYER_URL);
 
     // the done loading listener will run the enclosed code on a separate thread which is off the UI thread
@@ -147,10 +146,8 @@ public class App extends Application {
     });
     serviceGeodatabase.loadAsync();
 
-     */
 
     // listen for click events on the map control
-    /*
     mapView.setOnMouseClicked(event -> {
       // check that the primary mouse button was clicked
       if (event.isStillSincePress() && event.getButton() == MouseButton.PRIMARY) {
@@ -170,13 +167,9 @@ public class App extends Application {
         // use the input to create a new feature
         dialog.showAndWait().ifPresent(pair -> {
           addFeature(pair.getKey(), pair.getValue(), placesComboBox.getSelectionModel().getSelectedItem(), normalizedMapPoint, featureTable);
-
         });
       }
     });
-
-     */
-
   }
 
   /**
