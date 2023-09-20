@@ -30,6 +30,7 @@ import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.view.MapView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -64,8 +66,9 @@ public class App extends Application {
 
   private ServiceFeatureTable featureTable;
 
-  Dialog<Pair<String, String>> dialog;
+  private ComboBox<String> placesComboBox;
 
+  private Dialog<Pair<String, String>> dialog;
 
   private static final String SERVICE_LAYER_URL =
     "https://services1.arcgis.com/6677msI40mnLuuLr/arcgis/rest/services/PointsofRelaxing/FeatureServer/0";
@@ -79,14 +82,15 @@ public class App extends Application {
   public void start(Stage stage) {
 
     // set the title and size of the stage and show it
-    stage.setTitle("My Map App");
-    stage.setWidth(800);
-    stage.setHeight(700);
+    stage.setTitle("Map of Relaxation");
+    stage.setWidth(1000);
+    stage.setHeight(800);
     stage.show();
 
     // create a JavaFX scene with a stack pane as the root node and add it to the scene
     StackPane stackPane = new StackPane();
     Scene scene = new Scene(stackPane);
+    scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style.css")).toExternalForm());
     stage.setScene(scene);
 
     // Note: it is not best practice to store API keys in source code.
@@ -108,19 +112,13 @@ public class App extends Application {
     // display the map by setting the map on the map view
     mapView.setMap(map);
 
-    var placeTypesArray = new ArrayList<String>();
-    placeTypesArray.add("Cafe");
-    placeTypesArray.add("Park");
-    placeTypesArray.add("Nature");
-    placeTypesArray.add("Water");
-    placeTypesArray.add("Urban");
-    placeTypesArray.add("Other");
+    // set up an array list to capture categories of places
+    var placeTypesArray = new ArrayList<>(Arrays.asList("Cafe", "Park", "Nature", "Water", "Urban", "Other"));
 
-    var placesComboBox = new ComboBox<String>();
+    placesComboBox = new ComboBox<>();
     placesComboBox.getItems().setAll(placeTypesArray);
+    placesComboBox.getStyleClass().add("myComboBox");
     placesComboBox.getSelectionModel().select(0); // select first item in combobox on load
-    stackPane.getChildren().add(placesComboBox); // add the combobox to the UI
-    StackPane.setAlignment(placesComboBox, Pos.TOP_LEFT);
 
     setUpTextInputDialog();
 
@@ -168,15 +166,17 @@ public class App extends Application {
 
   }
 
-  private void setUpTextInputDialog() {
+  public void setUpTextInputDialog() {
 
     dialog = new Dialog<>();
     dialog.setTitle("Details");
-    dialog.setHeaderText("Enter details of your happy place here!");
+    dialog.setHeaderText("Where do you like to relax?");
     dialog.setGraphic(new ImageView(new Image(Objects.requireNonNull(this.getClass().getResource("/happy.png")).toString())));
 
     // set the button types
     var dialogPane = dialog.getDialogPane();
+    dialogPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style.css")).toExternalForm());
+    dialogPane.getStyleClass().add("myDialog");
     ButtonType submitButtonType = new ButtonType("Submit", ButtonBar.ButtonData.OK_DONE);
     dialogPane.getButtonTypes().addAll(submitButtonType, ButtonType.CANCEL);
 
@@ -186,8 +186,9 @@ public class App extends Application {
     grid.setVgap(10);
     grid.setPadding(new Insets(20, 150, 10, 10));
 
-    // set up the textfields
+    // set up the text fields
     TextField placeNameField = new TextField();
+    placeNameField.setPrefWidth(300);
     placeNameField.setPromptText("Place name");
     TextField description = new TextField();
     description.setPromptText("Place description");
@@ -197,7 +198,10 @@ public class App extends Application {
     grid.add(placeNameField, 1, 0);
     grid.add(new Label("Description:"), 0, 1);
     grid.add(description, 1, 1);
+    grid.add(new Label("Category:"), 0, 2);
+    grid.add(placesComboBox, 1, 2);
     dialogPane.setContent(grid);
+    grid.getColumnConstraints().add(new ColumnConstraints(100));
 
     // enable/Disable login button depending on whether a username was entered
     Node submitButton = dialog.getDialogPane().lookupButton(submitButtonType);
