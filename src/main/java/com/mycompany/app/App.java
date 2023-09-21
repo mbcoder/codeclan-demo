@@ -99,23 +99,23 @@ public class App extends Application {
     System.out.println("API key -" + yourAPIKey);
     ArcGISRuntimeEnvironment.setApiKey(yourAPIKey);
 
-    // create a MapView to display the map and add it to the stack pane --- STEP ---
-    //mapView = new MapView();
-    //stackPane.getChildren().add(mapView);
+    // create a MapView to display the map and add it to the stack pane
+    mapView = new MapView();
+    stackPane.getChildren().add(mapView);
 
     var label = new Label("Click to add a feature!");
     label.getStyleClass().add("myLabel");
     stackPane.getChildren().add(label);
     StackPane.setAlignment(label, Pos.TOP_LEFT);
 
-    // create an ArcGISMap with an imagery basemap --- STEP ---
-    //ArcGISMap map = new ArcGISMap(BasemapStyle.ARCGIS_IMAGERY);
+    // create an ArcGISMap with an imagery basemap
+    ArcGISMap map = new ArcGISMap(BasemapStyle.ARCGIS_IMAGERY);
 
-    // display the map by setting the map on the map view --- STEP ---
-    //mapView.setMap(map);
+    // display the map by setting the map on the map view
+    mapView.setMap(map);
 
     // set a viewpoint on the map view --- STEP ---
-    //mapView.setViewpoint(new Viewpoint(57, -4, 4000000));
+    mapView.setViewpoint(new Viewpoint(57, -4, 4000000));
 
     // set up an array list to capture categories of places
     var placeTypesArray = new ArrayList<>(Arrays.asList("Cafe", "Park", "Nature", "Water", "Urban", "Other"));
@@ -149,6 +149,7 @@ public class App extends Application {
 
      */
 
+
     // listen for click events on the map control
     /*
     mapView.setOnMouseClicked(event -> {
@@ -168,15 +169,13 @@ public class App extends Application {
 
         // show the dialog and wait for user input
         // use the input to create a new feature
-        dialog.showAndWait().ifPresent(pair -> {
-          addFeature(pair.getKey(), pair.getValue(), placesComboBox.getSelectionModel().getSelectedItem(), normalizedMapPoint, featureTable);
-
-        });
+        //dialog.showAndWait().ifPresent(pair -> {
+        //  addFeature(pair.getKey(), pair.getValue(), placesComboBox.getSelectionModel().getSelectedItem(), normalizedMapPoint, featureTable);
+        //});
       }
     });
 
      */
-
   }
 
   /**
