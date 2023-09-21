@@ -21,10 +21,7 @@ import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.FeatureTableEditResult;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
-import com.esri.arcgisruntime.data.ServiceGeodatabase;
-import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.Point;
-import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.mapping.BasemapStyle;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Viewpoint;
@@ -41,7 +38,6 @@ import java.util.concurrent.ExecutionException;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -54,7 +50,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -257,7 +252,7 @@ public class App extends Application {
     // check if feature can be added to feature table
     if (featureTable.canAdd()) {
       // add the new feature to the feature table and to server
-      featureTable.addFeatureAsync(feature).addDoneListener(() -> applyEdits(featureTable));
+      featureTable.addFeatureAsync(feature).addDoneListener(() -> pushEditsToFeatureService(featureTable));
     } else {
       displayMessage(null, "Cannot add a feature to this feature table");
     }
@@ -268,7 +263,7 @@ public class App extends Application {
    *
    * @param featureTable service feature table
    */
-  private void applyEdits(ServiceFeatureTable featureTable) {
+  private void pushEditsToFeatureService(ServiceFeatureTable featureTable) {
 
     // apply the changes to the server
     ListenableFuture<List<FeatureTableEditResult>> editResult = featureTable.getServiceGeodatabase().applyEditsAsync();
