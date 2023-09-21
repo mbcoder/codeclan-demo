@@ -109,7 +109,7 @@ public class App extends Application {
     StackPane.setAlignment(label, Pos.TOP_LEFT);
 
     // create an ArcGISMap with an imagery basemap
-    ArcGISMap map = new ArcGISMap(BasemapStyle.ARCGIS_IMAGERY);
+    ArcGISMap map = new ArcGISMap(BasemapStyle.ARCGIS_STREETS);
 
     // display the map by setting the map on the map view
     mapView.setMap(map);
